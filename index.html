@@ -1,768 +1,244 @@
 <!DOCTYPE html>
-<html lang="it"><head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FORPIN Landing Page Builder &amp; Editor</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
-  
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            forpin: {
-              navy: '#0b2265',
-              blue: '#1a3989',
-              hover: '#2349ac',
-              cyan: '#00d2ff',
-              light: '#f8f9fa'
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      overflow: hidden;
-    }
-
-    /* Editable Outline on Hover */
-    .builder-active [contenteditable="true"]:hover {
-      outline: 2px dashed #3b82f6;
-      outline-offset: 3px;
-      cursor: text;
-      border-radius: 2px;
-    }
-    .builder-active [contenteditable="true"]:focus {
-      outline: 2px solid #2563eb;
-      outline-offset: 3px;
-      background-color: rgba(59, 130, 246, 0.05);
-      border-radius: 2px;
-    }
-
-    /* Section Control Highlights */
-    .page-section {
-      position: relative;
-      transition: all 0.2s ease;
-    }
-    .builder-active .page-section:hover {
-      box-shadow: inset 0 0 0 2px #3b82f6;
-    }
-
-    .section-toolbar {
-      display: none;
-      position: absolute;
-      top: 8px;
-      right: 12px;
-      z-index: 50;
-      background: #1e293b;
-      border-radius: 6px;
-      padding: 4px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    }
-    .builder-active .page-section:hover .section-toolbar {
-      display: flex;
-      gap: 4px;
-    }
-
-    /* Canvas Screen Sizes */
-    .view-desktop {
-      width: 100%;
-      height: 100%;
-    }
-    .view-tablet {
-      width: 768px;
-      height: 90%;
-      margin: 20px auto;
-      border-radius: 12px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-    }
-    .view-mobile {
-      width: 380px;
-      height: 85%;
-      margin: 20px auto;
-      border-radius: 24px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-      border: 8px solid #1e293b;
-    }
-
-    /* Custom Scrollbar for Sidebar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0f172a;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #475569;
-    }
-
-    /* Sphere Logo Custom CSS */
-    .forpin-logo-sphere {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #ffffff 15%, #5a8bd8 45%, #0b2265 85%);
-      box-shadow: 0 0 8px rgba(255,255,255,0.2);
-    }
-  </style>
-<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.right-0{right:0px}.top-0{top:0px}.z-10{z-index:10}.z-20{z-index:20}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-12{margin-bottom:3rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-8{margin-bottom:2rem}.ml-2{margin-left:0.5rem}.mr-1\.5{margin-right:0.375rem}.mt-4{margin-top:1rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-14{height:3.5rem}.h-40{height:10rem}.h-44{height:11rem}.h-8{height:2rem}.h-full{height:100%}.h-screen{height:100vh}.min-h-\[460px\]{min-height:460px}.w-10{width:2.5rem}.w-8{width:2rem}.w-80{width:20rem}.w-full{width:100%}.max-w-2xl{max-width:42rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.max-w-xl{max-width:36rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.scale-75{--tw-scale-x:.75;--tw-scale-y:.75;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.resize-none{resize:none}.list-disc{list-style-type:disc}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.375rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-r{border-right-width:1px}.border-t{border-top-width:1px}.border-blue-500{--tw-border-opacity:1;border-color:rgb(59 130 246 / var(--tw-border-opacity, 1))}.border-blue-500\/40{border-color:rgb(59 130 246 / 0.4)}.border-blue-700\/50{border-color:rgb(29 78 216 / 0.5)}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-700\/50{border-color:rgb(51 65 85 / 0.5)}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.border-transparent{border-color:transparent}.border-white\/10{border-color:rgb(255 255 255 / 0.1)}.border-white\/20{border-color:rgb(255 255 255 / 0.2)}.bg-\[\#0b2265\]{--tw-bg-opacity:1;background-color:rgb(11 34 101 / var(--tw-bg-opacity, 1))}.bg-\[\#1a3989\]{--tw-bg-opacity:1;background-color:rgb(26 57 137 / var(--tw-bg-opacity, 1))}.bg-amber-500\/20{background-color:rgb(245 158 11 / 0.2)}.bg-blue-100{--tw-bg-opacity:1;background-color:rgb(219 234 254 / var(--tw-bg-opacity, 1))}.bg-blue-500\/20{background-color:rgb(59 130 246 / 0.2)}.bg-blue-600{--tw-bg-opacity:1;background-color:rgb(37 99 235 / var(--tw-bg-opacity, 1))}.bg-blue-600\/20{background-color:rgb(37 99 235 / 0.2)}.bg-blue-900\/60{background-color:rgb(30 58 138 / 0.6)}.bg-cyan-500\/20{background-color:rgb(6 182 212 / 0.2)}.bg-emerald-100{--tw-bg-opacity:1;background-color:rgb(209 250 229 / var(--tw-bg-opacity, 1))}.bg-emerald-500\/20{background-color:rgb(16 185 129 / 0.2)}.bg-emerald-600{--tw-bg-opacity:1;background-color:rgb(5 150 105 / var(--tw-bg-opacity, 1))}.bg-purple-100{--tw-bg-opacity:1;background-color:rgb(243 232 255 / var(--tw-bg-opacity, 1))}.bg-purple-500\/20{background-color:rgb(168 85 247 / 0.2)}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-900\/80{background-color:rgb(15 23 42 / 0.8)}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-\[\#0b2265\]{--tw-gradient-from:#0b2265 var(--tw-gradient-from-position);--tw-gradient-to:rgb(11 34 101 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-\[\#0b2265\]\/90{--tw-gradient-to:rgb(11 34 101 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), rgb(11 34 101 / 0.9) var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-transparent{--tw-gradient-to:transparent var(--tw-gradient-to-position)}.bg-cover{background-size:cover}.bg-center{background-position:center}.p-0{padding:0px}.p-1{padding:0.25rem}.p-1\.5{padding:0.375rem}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-7{padding-left:1.75rem;padding-right:1.75rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.pl-4{padding-left:1rem}.text-left{text-align:left}.text-center{text-align:center}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-black{font-weight:900}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.text-\[\#0b2265\]{--tw-text-opacity:1;color:rgb(11 34 101 / var(--tw-text-opacity, 1))}.text-amber-400{--tw-text-opacity:1;color:rgb(251 191 36 / var(--tw-text-opacity, 1))}.text-blue-300{--tw-text-opacity:1;color:rgb(147 197 253 / var(--tw-text-opacity, 1))}.text-blue-400{--tw-text-opacity:1;color:rgb(96 165 250 / var(--tw-text-opacity, 1))}.text-blue-800{--tw-text-opacity:1;color:rgb(30 64 175 / var(--tw-text-opacity, 1))}.text-cyan-400{--tw-text-opacity:1;color:rgb(34 211 238 / var(--tw-text-opacity, 1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153 / var(--tw-text-opacity, 1))}.text-emerald-500{--tw-text-opacity:1;color:rgb(16 185 129 / var(--tw-text-opacity, 1))}.text-emerald-800{--tw-text-opacity:1;color:rgb(6 95 70 / var(--tw-text-opacity, 1))}.text-purple-400{--tw-text-opacity:1;color:rgb(192 132 252 / var(--tw-text-opacity, 1))}.text-purple-800{--tw-text-opacity:1;color:rgb(107 33 168 / var(--tw-text-opacity, 1))}.text-red-400{--tw-text-opacity:1;color:rgb(248 113 113 / var(--tw-text-opacity, 1))}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.no-underline{-webkit-text-decoration-line:none;text-decoration-line:none}.opacity-70{opacity:0.7}.shadow{--tw-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-200{transition-duration:200ms}.duration-300{transition-duration:300ms}.hover\:bg-\[\#1a3989\]:hover{--tw-bg-opacity:1;background-color:rgb(26 57 137 / var(--tw-bg-opacity, 1))}.hover\:bg-\[\#2349ac\]:hover{--tw-bg-opacity:1;background-color:rgb(35 73 172 / var(--tw-bg-opacity, 1))}.hover\:bg-blue-500:hover{--tw-bg-opacity:1;background-color:rgb(59 130 246 / var(--tw-bg-opacity, 1))}.hover\:bg-blue-600:hover{--tw-bg-opacity:1;background-color:rgb(37 99 235 / var(--tw-bg-opacity, 1))}.hover\:bg-emerald-500:hover{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.hover\:bg-red-900\/30:hover{background-color:rgb(127 29 29 / 0.3)}.hover\:bg-slate-700:hover{--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-700\/80:hover{background-color:rgb(51 65 85 / 0.8)}.hover\:text-blue-200:hover{--tw-text-opacity:1;color:rgb(191 219 254 / var(--tw-text-opacity, 1))}.hover\:text-blue-700:hover{--tw-text-opacity:1;color:rgb(29 78 216 / var(--tw-text-opacity, 1))}.hover\:text-red-300:hover{--tw-text-opacity:1;color:rgb(252 165 165 / var(--tw-text-opacity, 1))}.hover\:text-slate-200:hover{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.hover\:text-slate-300:hover{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.focus\:border-blue-500:focus{--tw-border-opacity:1;border-color:rgb(59 130 246 / var(--tw-border-opacity, 1))}.focus\:border-blue-600:focus{--tw-border-opacity:1;border-color:rgb(37 99 235 / var(--tw-border-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.group:hover .group-hover\:bg-amber-500{--tw-bg-opacity:1;background-color:rgb(245 158 11 / var(--tw-bg-opacity, 1))}.group:hover .group-hover\:bg-blue-500{--tw-bg-opacity:1;background-color:rgb(59 130 246 / var(--tw-bg-opacity, 1))}.group:hover .group-hover\:bg-cyan-500{--tw-bg-opacity:1;background-color:rgb(6 182 212 / var(--tw-bg-opacity, 1))}.group:hover .group-hover\:bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.group:hover .group-hover\:bg-purple-500{--tw-bg-opacity:1;background-color:rgb(168 85 247 / var(--tw-bg-opacity, 1))}.group:hover .group-hover\:text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}@media (min-width: 768px){.md\:flex{display:flex}.md\:w-\[65\%\]{width:65%}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:via-\[\#0b2265\]\/80{--tw-gradient-to:rgb(11 34 101 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), rgb(11 34 101 / 0.8) var(--tw-gradient-via-position), var(--tw-gradient-to)}.md\:p-4{padding:1rem}.md\:text-right{text-align:right}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-lg{font-size:1.125rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:text-\[42px\]{font-size:42px}}</style></head>
-<body class="bg-slate-950 text-slate-100 flex h-screen overflow-hidden">
-
-  <!-- SIDEBAR: Controls & Customization -->
-  <aside class="w-80 bg-slate-900 border-r border-slate-800 flex flex-col z-20 shrink-0">
-    <!-- Header -->
-    <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
-      <div class="flex items-center gap-2">
-        <div class="forpin-logo-sphere scale-75"></div>
-        <span class="font-bold text-white tracking-wide">FORPIN <span class="text-xs font-normal text-blue-400">Builder</span></span>
-      </div>
-      <span class="text-xs bg-blue-900/60 text-blue-300 px-2 py-0.5 rounded border border-blue-700/50">v2.0 Live Editor</span>
-    </div>
-
-    <!-- Navigation Tabs -->
-    <div class="flex border-b border-slate-800 text-xs font-medium bg-slate-900/80">
-      <button onclick="switchTab('sections')" id="tab-btn-sections" class="flex-1 py-3 border-b-2 border-blue-500 text-blue-400 flex items-center justify-center gap-1.5 transition">
-        <i class="fas fa-layer-group"></i> Sezioni
-      </button>
-      <button onclick="switchTab('style')" id="tab-btn-style" class="flex-1 py-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 transition">
-        <i class="fas fa-palette"></i> Stile
-      </button>
-      <button onclick="switchTab('export')" id="tab-btn-export" class="flex-1 py-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 transition">
-        <i class="fas fa-code"></i> Esporta
-      </button>
-    </div>
-
-    <!-- Tab Content Area -->
-    <div class="flex-1 overflow-y-auto p-4 space-y-6">
-
-      <!-- SECTIONS TAB -->
-      <div id="tab-sections" class="space-y-4">
-        <div>
-          <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Aggiungi Sezioni</h3>
-          <div class="grid grid-cols-1 gap-2">
-            <button onclick="addSection('courses')" class="flex items-center gap-3 p-3 bg-slate-800 hover:bg-slate-700/80 rounded-lg text-left transition border border-slate-700/50 group">
-              <div class="w-8 h-8 rounded bg-blue-500/20 text-blue-400 flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition">
-                <i class="fas fa-graduation-cap"></i>
-              </div>
-              <div>
-                <div class="text-sm font-medium text-slate-200">Griglia Corsi / Servizi</div>
-                <div class="text-xs text-slate-400">Catalogo corsi in evidenza</div>
-              </div>
-            </button>
-
-            <button onclick="addSection('stats')" class="flex items-center gap-3 p-3 bg-slate-800 hover:bg-slate-700/80 rounded-lg text-left transition border border-slate-700/50 group">
-              <div class="w-8 h-8 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition">
-                <i class="fas fa-chart-line"></i>
-              </div>
-              <div>
-                <div class="text-sm font-medium text-slate-200">Numeri &amp; Statistiche</div>
-                <div class="text-xs text-slate-400">Punti di forza e successi</div>
-              </div>
-            </button>
-
-            <button onclick="addSection('testimonials')" class="flex items-center gap-3 p-3 bg-slate-800 hover:bg-slate-700/80 rounded-lg text-left transition border border-slate-700/50 group">
-              <div class="w-8 h-8 rounded bg-purple-500/20 text-purple-400 flex items-center justify-center group-hover:bg-purple-500 group-hover:text-white transition">
-                <i class="fas fa-quote-right"></i>
-              </div>
-              <div>
-                <div class="text-sm font-medium text-slate-200">Testimonianze</div>
-                <div class="text-xs text-slate-400">Opinioni di allievi e aziende</div>
-              </div>
-            </button>
-
-            <button onclick="addSection('contact')" class="flex items-center gap-3 p-3 bg-slate-800 hover:bg-slate-700/80 rounded-lg text-left transition border border-slate-700/50 group">
-              <div class="w-8 h-8 rounded bg-amber-500/20 text-amber-400 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-white transition">
-                <i class="fas fa-envelope"></i>
-              </div>
-              <div>
-                <div class="text-sm font-medium text-slate-200">Form Contatti / Info</div>
-                <div class="text-xs text-slate-400">Modulo per richiesta informazioni</div>
-              </div>
-            </button>
-
-            <button onclick="addSection('faq')" class="flex items-center gap-3 p-3 bg-slate-800 hover:bg-slate-700/80 rounded-lg text-left transition border border-slate-700/50 group">
-              <div class="w-8 h-8 rounded bg-cyan-500/20 text-cyan-400 flex items-center justify-center group-hover:bg-cyan-500 group-hover:text-white transition">
-                <i class="fas fa-question-circle"></i>
-              </div>
-              <div>
-                <div class="text-sm font-medium text-slate-200">Domande Frequenti (FAQ)</div>
-                <div class="text-xs text-slate-400">F.A.Q. pieghevoli</div>
-              </div>
-            </button>
-          </div>
-        </div>
-
-        <hr class="border-slate-800">
-
-        <div>
-          <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Istruzioni Edizione</h3>
-          <ul class="text-xs text-slate-400 space-y-1.5 list-disc pl-4">
-            <li><strong>Clicca su qualsiasi testo</strong> per modificarlo direttamente nella pagina.</li>
-            <li>Passa il mouse sulle sezioni per <strong>spostarle o eliminarle</strong>.</li>
-            <li>Usa i pulsanti in alto per testare la resa su <strong>Mobile/Tablet</strong>.</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- STYLE TAB -->
-      <div id="tab-style" class="space-y-5 hidden">
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Colore Principale FORPIN</label>
-          <div class="flex items-center gap-3">
-            <input type="color" id="primary-color-picker" value="#0b2265" onchange="updateThemeColor(this.value)" class="w-10 h-10 rounded cursor-pointer bg-slate-800 border border-slate-700">
-            <span id="primary-color-val" class="text-xs font-mono bg-slate-800 px-2 py-1 rounded text-slate-300">#0b2265</span>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Immagine Sfondo Hero</label>
-          <input type="text" id="hero-bg-url" value="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&amp;fit=crop&amp;w=1350&amp;q=80" oninput="updateHeroBg(this.value)" class="w-full bg-slate-800 border border-slate-700 text-xs rounded p-2 text-slate-200 focus:outline-none focus:border-blue-500" placeholder="URL Immagine...">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Pulsante Principale (CTA)</label>
-          <div class="space-y-2">
-            <input type="text" id="cta-link-input" value="#" oninput="updateCtaLink(this.value)" class="w-full bg-slate-800 border border-slate-700 text-xs rounded p-2 text-slate-200 focus:outline-none focus:border-blue-500" placeholder="Link (URL, es. #contatti)">
-          </div>
-        </div>
-
-        <button onclick="resetTemplate()" class="w-full py-2 bg-slate-800 hover:bg-red-900/30 text-red-400 hover:text-red-300 text-xs font-medium rounded border border-slate-700 transition">
-          <i class="fas fa-undo mr-1.5"></i> Ripristina FORPIN Originale
-        </button>
-      </div>
-
-      <!-- EXPORT TAB -->
-      <div id="tab-export" class="space-y-4 hidden">
-        <p class="text-xs text-slate-400">
-          Puoi scaricare il codice HTML completo pronto per la pubblicazione su **GitHub Pages**, **Netlify** o qualsiasi hosting web.
-        </p>
-
-        <button onclick="exportHTML()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs rounded shadow flex items-center justify-center gap-2 transition">
-          <i class="fas fa-download"></i> Scarica index.html
-        </button>
-
-        <button onclick="copyHTMLToClipboard()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs rounded border border-slate-700 flex items-center justify-center gap-2 transition">
-          <i class="fas fa-copy"></i> Copia Codice negli Appunti
-        </button>
-
-        <div class="mt-4">
-          <label class="block text-xs font-semibold text-slate-400 mb-1">Anteprima Codice:</label>
-          <textarea id="export-code-preview" readonly="" class="w-full h-40 bg-slate-950 border border-slate-800 text-[10px] font-mono p-2 rounded text-slate-400 resize-none focus:outline-none"></textarea>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Bottom Actions -->
-    <div class="p-3 border-t border-slate-800 bg-slate-950 flex gap-2">
-      <button onclick="saveToLocalStorage()" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-medium flex items-center justify-center gap-1.5 transition">
-        <i class="fas fa-save"></i> Salva Bozza
-      </button>
-    </div>
-  </aside>
-
-  <!-- MAIN WORKSPACE -->
-  <main class="flex-1 flex flex-col h-full bg-slate-950 overflow-hidden">
-    
-    <!-- Top Viewport Control Bar -->
-    <header class="h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-6 z-10 shrink-0">
-      <div class="flex items-center gap-3">
-        <span class="text-xs text-slate-400 font-medium">Modalità Anteprima:</span>
-        <div class="bg-slate-950 p-1 rounded-lg border border-slate-800 flex items-center gap-1">
-          <button onclick="setView('desktop')" id="view-btn-desktop" class="px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded transition flex items-center gap-1.5">
-            <i class="fas fa-desktop"></i> Desktop
-          </button>
-          <button onclick="setView('tablet')" id="view-btn-tablet" class="px-3 py-1 text-slate-400 hover:text-white text-xs font-medium rounded transition flex items-center gap-1.5">
-            <i class="fas fa-tablet-alt"></i> Tablet
-          </button>
-          <button onclick="setView('mobile')" id="view-btn-mobile" class="px-3 py-1 text-slate-400 hover:text-white text-xs font-medium rounded transition flex items-center gap-1.5">
-            <i class="fas fa-mobile-alt"></i> Mobile
-          </button>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-3">
-        <span id="save-status" class="text-xs text-slate-500 flex items-center gap-1">
-          <i class="fas fa-check-circle text-emerald-500"></i> Pronto
-        </span>
-        <button onclick="toggleEditingMode()" id="toggle-edit-btn" class="bg-blue-600/20 border border-blue-500/40 text-blue-300 hover:bg-blue-600 hover:text-white text-xs px-3 py-1.5 rounded transition font-medium flex items-center gap-1.5">
-          <i class="fas fa-pen"></i> Modalità Modifica
-        </button>
-      </div>
-    </header>
-
-    <!-- Canvas Wrapper -->
-    <div class="flex-1 overflow-y-auto bg-slate-950 flex justify-center items-start p-0 md:p-4" id="canvas-container">
-      
-      <!-- Interactive Page Canvas -->
-      <div id="page-canvas" class="view-desktop bg-white text-slate-800 transition-all duration-300 overflow-y-auto builder-active shadow-2xl">
-        
-        <!-- SECTION 1: HEADER FORPIN (From Screenshot) -->
-        <header id="sec-header" class="page-section bg-[#0b2265] text-white sticky top-0 z-50 transition-colors duration-300">
-          <div class="section-toolbar">
-            <button onclick="moveSectionUp('sec-header')" class="p-1.5 text-slate-300 hover:text-white text-xs" title="Sposta su"><i class="fas fa-arrow-up"></i></button>
-            <button onclick="moveSectionDown('sec-header')" class="p-1.5 text-slate-300 hover:text-white text-xs" title="Sposta giù"><i class="fas fa-arrow-down"></i></button>
-          </div>
-
-          <!-- Top Navigation Bar -->
-          <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <!-- FORPIN Logo -->
-            <a href="#" class="flex items-center gap-2.5 text-white no-underline">
-              <div class="forpin-logo-sphere"></div>
-              <span class="text-2xl font-black tracking-wider text-white" contenteditable="true" spellcheck="false">FORPIN</span>
-            </a>
-
-            <!-- Top Menu -->
-            <div class="hidden md:flex items-center gap-6 text-xs font-medium text-slate-100">
-              <span contenteditable="true" spellcheck="false" class="hover:text-slate-300 cursor-pointer">Chi siamo</span>
-              <span contenteditable="true" spellcheck="false" class="hover:text-slate-300 cursor-pointer">Podcast Forpin for AI</span>
-              <span contenteditable="true" spellcheck="false" class="hover:text-slate-300 cursor-pointer">News</span>
-              <span contenteditable="true" spellcheck="false" class="hover:text-slate-300 cursor-pointer">Contatti</span>
-              <div class="flex items-center gap-3 ml-2 text-sm text-slate-200">
-                <i class="far fa-newspaper cursor-pointer hover:text-white"></i>
-                <i class="fas fa-search cursor-pointer hover:text-white"></i>
-              </div>
-            </div>
-          </div>
-
-          <!-- Lower Main Sub-Nav -->
-          <nav class="hidden md:flex justify-center gap-8 py-2.5 text-xs font-bold uppercase tracking-wider border-t border-white/10 text-slate-100">
-            <a href="#corsi" class="hover:text-blue-200 flex items-center gap-1">
-              <span contenteditable="true" spellcheck="false">CATALOGO CORSI</span> <i class="fas fa-chevron-down text-[10px] opacity-70"></i>
-            </a>
-            <a href="#aziende" class="hover:text-blue-200 flex items-center gap-1">
-              <span contenteditable="true" spellcheck="false">PER LE AZIENDE</span> <i class="fas fa-chevron-down text-[10px] opacity-70"></i>
-            </a>
-            <a href="#persone" class="hover:text-blue-200 flex items-center gap-1">
-              <span contenteditable="true" spellcheck="false">PER LE PERSONE</span> <i class="fas fa-chevron-down text-[10px] opacity-70"></i>
-            </a>
-          </nav>
-        </header>
-
-        <!-- SECTION 2: HERO BANNER (From Screenshot) -->
-        <section id="sec-hero" class="page-section relative bg-[#0b2265] text-white min-h-[460px] flex items-center overflow-hidden">
-          <div class="section-toolbar">
-            <button onclick="moveSectionUp('sec-hero')" class="p-1.5 text-slate-300 hover:text-white text-xs" title="Sposta su"><i class="fas fa-arrow-up"></i></button>
-            <button onclick="moveSectionDown('sec-hero')" class="p-1.5 text-slate-300 hover:text-white text-xs" title="Sposta giù"><i class="fas fa-arrow-down"></i></button>
-          </div>
-
-          <!-- Background Image -->
-          <div id="hero-bg-elem" class="absolute top-0 right-0 w-full md:w-[65%] h-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&amp;fit=crop&amp;w=1350&amp;q=80');"></div>
-          
-          <!-- Gradient Overlay -->
-          <div class="absolute inset-0 bg-gradient-to-r from-[#0b2265] via-[#0b2265]/90 md:via-[#0b2265]/80 to-transparent"></div>
-
-          <!-- Hero Content Block -->
-          <div class="relative z-10 max-w-6xl mx-auto px-6 py-16 w-full">
-            <div class="max-w-xl">
-              <h1 class="text-3xl md:text-4xl lg:text-[42px] font-bold leading-tight mb-4" contenteditable="true" spellcheck="false">Scopri la Realtà aumentata</h1>
-              <p class="text-base md:text-lg text-slate-200 font-medium mb-8 leading-relaxed" contenteditable="true" spellcheck="false">Clicca&nbsp; il bottone sotto e inquadra i loghi social.</p>
-              <a id="hero-cta-btn" href="#corsi" class="inline-block bg-[#1a3989] hover:bg-[#2349ac] text-white font-semibold text-sm px-7 py-3 rounded shadow transition duration-200 border border-white/20">
-                <span contenteditable="true" spellcheck="false">Clicca qui</span>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <!-- SECTION 3: FEATURED COURSES / SERVICES -->
-        <section id="sec-courses" class="page-section py-16 bg-slate-50">
-          <div class="section-toolbar">
-            <button onclick="moveSectionUp('sec-courses')" class="p-1.5 text-slate-300 hover:text-white text-xs"><i class="fas fa-arrow-up"></i></button>
-            <button onclick="moveSectionDown('sec-courses')" class="p-1.5 text-slate-300 hover:text-white text-xs"><i class="fas fa-arrow-down"></i></button>
-            <button onclick="removeSection('sec-courses')" class="p-1.5 text-red-400 hover:text-red-300 text-xs"><i class="fas fa-trash"></i></button>
-          </div>
-
-          <div class="max-w-6xl mx-auto px-6">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-              <h2 class="text-2xl md:text-3xl font-bold text-[#0b2265] mb-3" contenteditable="true">Catalogo Corsi In Evidenza</h2>
-              <p class="text-slate-600 text-sm" contenteditable="true">Percorsi formativi progettati per sviluppare le competenze più richieste dalle imprese locali.</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8">
-              <!-- Course Card 1 -->
-              <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-200 flex flex-col">
-                <div class="h-44 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&amp;fit=crop&amp;w=600&amp;q=80');"></div>
-                <div class="p-6 flex-1 flex flex-col justify-between">
-                  <div>
-                    <span class="inline-block px-2.5 py-1 text-[11px] font-bold text-blue-800 bg-blue-100 rounded mb-3" contenteditable="true">INNOVAZIONE &amp; AI</span>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2" contenteditable="true">Artificial Intelligence per le Aziende</h3>
-                    <p class="text-xs text-slate-600 mb-4 leading-relaxed" contenteditable="true">Applicazioni pratiche dell'intelligenza artificiale nei processi aziendali e nella produttività.</p>
-                  </div>
-                  <a href="#" class="text-xs font-bold text-[#0b2265] hover:text-blue-700 flex items-center gap-1">
-                    <span contenteditable="true">Vedi Scheda Corso</span> <i class="fas fa-arrow-right text-[10px]"></i>
-                  </a>
-                </div>
-              </div>
-
-              <!-- Course Card 2 -->
-              <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-200 flex flex-col">
-                <div class="h-44 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&amp;fit=crop&amp;w=600&amp;q=80');"></div>
-                <div class="p-6 flex-1 flex flex-col justify-between">
-                  <div>
-                    <span class="inline-block px-2.5 py-1 text-[11px] font-bold text-emerald-800 bg-emerald-100 rounded mb-3" contenteditable="true">MANAGEMENT</span>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2" contenteditable="true">Leadership e Gestione del Team</h3>
-                    <p class="text-xs text-slate-600 mb-4 leading-relaxed" contenteditable="true">Sviluppa le competenze di gestione per guidare gruppi di lavoro verso obiettivi condivisi.</p>
-                  </div>
-                  <a href="#" class="text-xs font-bold text-[#0b2265] hover:text-blue-700 flex items-center gap-1">
-                    <span contenteditable="true">Vedi Scheda Corso</span> <i class="fas fa-arrow-right text-[10px]"></i>
-                  </a>
-                </div>
-              </div>
-
-              <!-- Course Card 3 -->
-              <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-200 flex flex-col">
-                <div class="h-44 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&amp;fit=crop&amp;w=600&amp;q=80');"></div>
-                <div class="p-6 flex-1 flex flex-col justify-between">
-                  <div>
-                    <span class="inline-block px-2.5 py-1 text-[11px] font-bold text-purple-800 bg-purple-100 rounded mb-3" contenteditable="true">SICUREZZA &amp; NORMATIVA</span>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2" contenteditable="true">Sicurezza sul Lavoro &amp; Compliance</h3>
-                    <p class="text-xs text-slate-600 mb-4 leading-relaxed" contenteditable="true">Aggiornamenti normativi obbligatori per dipendenti e dirigenti d'azienda.</p>
-                  </div>
-                  <a href="#" class="text-xs font-bold text-[#0b2265] hover:text-blue-700 flex items-center gap-1">
-                    <span contenteditable="true">Vedi Scheda Corso</span> <i class="fas fa-arrow-right text-[10px]"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- SECTION 4: NUMBERS & STATS -->
-        <section id="sec-stats" class="page-section py-16 bg-[#0b2265] text-white">
-          <div class="section-toolbar">
-            <button onclick="moveSectionUp('sec-stats')" class="p-1.5 text-slate-300 hover:text-white text-xs"><i class="fas fa-arrow-up"></i></button>
-            <button onclick="moveSectionDown('sec-stats')" class="p-1.5 text-slate-300 hover:text-white text-xs"><i class="fas fa-arrow-down"></i></button>
-            <button onclick="removeSection('sec-stats')" class="p-1.5 text-red-400 hover:text-red-300 text-xs"><i class="fas fa-trash"></i></button>
-          </div>
-
-          <div class="max-w-6xl mx-auto px-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              <div>
-                <div class="text-4xl font-black text-blue-300 mb-1" contenteditable="true">35+</div>
-                <div class="text-xs text-slate-300 uppercase tracking-wider font-semibold" contenteditable="true">Anni di Esperienza</div>
-              </div>
-              <div>
-                <div class="text-4xl font-black text-blue-300 mb-1" contenteditable="true">500+</div>
-                <div class="text-xs text-slate-300 uppercase tracking-wider font-semibold" contenteditable="true">Aziende Partner</div>
-              </div>
-              <div>
-                <div class="text-4xl font-black text-blue-300 mb-1" contenteditable="true">12.000+</div>
-                <div class="text-xs text-slate-300 uppercase tracking-wider font-semibold" contenteditable="true">Persone Formate</div>
-              </div>
-              <div>
-                <div class="text-4xl font-black text-blue-300 mb-1" contenteditable="true">98%</div>
-                <div class="text-xs text-slate-300 uppercase tracking-wider font-semibold" contenteditable="true">Soddisfazione Allievi</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- SECTION 5: CONTACT FORM & FOOTER -->
-        <section id="sec-contact" class="page-section py-16 bg-white">
-          <div class="section-toolbar">
-            <button onclick="moveSectionUp('sec-contact')" class="p-1.5 text-slate-300 hover:text-white text-xs"><i class="fas fa-arrow-up"></i></button>
-            <button onclick="moveSectionDown('sec-contact')" class="p-1.5 text-slate-300 hover:text-white text-xs"><i class="fas fa-arrow-down"></i></button>
-            <button onclick="removeSection('sec-contact')" class="p-1.5 text-red-400 hover:text-red-300 text-xs"><i class="fas fa-trash"></i></button>
-          </div>
-
-          <div class="max-w-4xl mx-auto px-6">
-            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-8 shadow-sm">
-              <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-[#0b2265] mb-2" contenteditable="true">Richiedi Informazioni o una Consulenza</h2>
-                <p class="text-xs text-slate-600" contenteditable="true">I nostri tutor ti ricontatteranno per guidarti nella scelta del corso migliore per le tue esigenze.</p>
-              </div>
-
-              <form onsubmit="event.preventDefault(); alert('Messaggio inviato con successo!');" class="space-y-4">
-                <div class="grid md:grid-cols-2 gap-4">
-                  <input type="text" placeholder="Nome e Cognome *" required="" class="w-full bg-white border border-slate-300 rounded p-3 text-xs focus:outline-none focus:border-blue-600">
-                  <input type="email" placeholder="Email Aziendale o Personale *" required="" class="w-full bg-white border border-slate-300 rounded p-3 text-xs focus:outline-none focus:border-blue-600">
-                </div>
-                <input type="text" placeholder="Azienda / Ambito d'interesse" class="w-full bg-white border border-slate-300 rounded p-3 text-xs focus:outline-none focus:border-blue-600">
-                <textarea rows="4" placeholder="Come possiamo aiutarti?" class="w-full bg-white border border-slate-300 rounded p-3 text-xs focus:outline-none focus:border-blue-600 resize-none"></textarea>
-                <button type="submit" class="w-full bg-[#0b2265] hover:bg-[#1a3989] text-white font-bold py-3 text-xs rounded transition">
-                  <span contenteditable="true">Invia la tua richiesta</span>
-                </button>
-              </form>
-            </div>
-          </div>
-        </section>
-
-        <!-- FOOTER -->
-        <footer id="sec-footer" class="page-section bg-slate-900 text-slate-400 py-10 text-xs border-t border-slate-800">
-          <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-              <div class="forpin-logo-sphere scale-75"></div>
-              <div>
-                <div class="font-bold text-white text-sm">FORPIN</div>
-                <div class="text-[11px] text-slate-500">Scuola di Formazione di Confindustria Piacenza</div>
-              </div>
-            </div>
-            <div class="text-center md:text-right text-[11px]" contenteditable="true">
-              © 2026 FORPIN - Tutti i diritti riservati | Privacy Policy | Cookie Policy
-            </div>
-          </div>
-        </footer>
-
-      </div>
-    </div>
-  </main>
-
-  <script>
-    let isEditingMode = true;
-
-    // Tab Switcher
-    function switchTab(tabName) {
-      ['sections', 'style', 'export'].forEach(t => {
-        document.getElementById(`tab-${t}`).classList.add('hidden');
-        document.getElementById(`tab-btn-${t}`).classList.remove('border-blue-500', 'text-blue-400');
-        document.getElementById(`tab-btn-${t}`).classList.add('border-transparent', 'text-slate-400');
-      });
-
-      document.getElementById(`tab-${tabName}`).classList.remove('hidden');
-      document.getElementById(`tab-btn-${tabName}`).classList.add('border-blue-500', 'text-blue-400');
-      document.getElementById(`tab-btn-${tabName}`).classList.remove('border-transparent', 'text-slate-400');
-
-      if (tabName === 'export') {
-        updateExportPreview();
-      }
-    }
-
-    // Viewport Resizer
-    function setView(view) {
-      const canvas = document.getElementById('page-canvas');
-      ['desktop', 'tablet', 'mobile'].forEach(v => {
-        canvas.classList.remove(`view-${v}`);
-        document.getElementById(`view-btn-${v}`).classList.remove('bg-blue-600', 'text-white');
-        document.getElementById(`view-btn-${v}`).classList.add('text-slate-400');
-      });
-
-      canvas.classList.add(`view-${view}`);
-      document.getElementById(`view-btn-${view}`).classList.add('bg-blue-600', 'text-white');
-      document.getElementById(`view-btn-${view}`).classList.remove('text-slate-400');
-    }
-
-    // Toggle Editing Mode
-    function toggleEditingMode() {
-      isEditingMode = !isEditingMode;
-      const canvas = document.getElementById('page-canvas');
-      const btn = document.getElementById('toggle-edit-btn');
-
-      if (isEditingMode) {
-        canvas.classList.add('builder-active');
-        btn.innerHTML = '<i class="fas fa-pen"></i> Modalità Modifica';
-        btn.classList.replace('bg-emerald-600/20', 'bg-blue-600/20');
-      } else {
-        canvas.classList.remove('builder-active');
-        btn.innerHTML = '<i class="fas fa-eye"></i> Modalità Anteprima';
-        btn.classList.replace('bg-blue-600/20', 'bg-emerald-600/20');
-      }
-    }
-
-    // Update Theme Colors Live
-    function updateThemeColor(hex) {
-      document.getElementById('primary-color-val').innerText = hex;
-      document.getElementById('sec-header').style.backgroundColor = hex;
-      document.getElementById('sec-hero').style.backgroundColor = hex;
-      document.getElementById('sec-stats').style.backgroundColor = hex;
-    }
-
-    // Update Hero Background Image
-    function updateHeroBg(url) {
-      document.getElementById('hero-bg-elem').style.backgroundImage = `url('${url}')`;
-    }
-
-    // Update CTA Link
-    function updateCtaLink(url) {
-      document.getElementById('hero-cta-btn').setAttribute('href', url);
-    }
-
-    // Section Management Functions
-    function moveSectionUp(id) {
-      const sec = document.getElementById(id);
-      if (sec && sec.previousElementSibling && sec.previousElementSibling.id !== 'sec-header') {
-        sec.parentNode.insertBefore(sec, sec.previousElementSibling);
-        notifySaveStatus();
-      }
-    }
-
-    function moveSectionDown(id) {
-      const sec = document.getElementById(id);
-      if (sec && sec.nextElementSibling && sec.nextElementSibling.id !== 'sec-footer') {
-        sec.parentNode.insertBefore(sec.nextElementSibling, sec);
-        notifySaveStatus();
-      }
-    }
-
-    function removeSection(id) {
-      const sec = document.getElementById(id);
-      if (sec && confirm('Sei sicuro di voler eliminare questa sezione?')) {
-        sec.remove();
-        notifySaveStatus();
-      }
-    }
-
-    function addSection(type) {
-      const canvas = document.getElementById('page-canvas');
-      const footer = document.getElementById('sec-footer');
-      const newId = 'sec-' + Date.now();
-      let html = '';
-
-      if (type === 'testimonials') {
-        html = `
-          <section id="${newId}" class="page-section py-16 bg-slate-100">
-            <div class="section-toolbar">
-              <button onclick="moveSectionUp('${newId}')" class="p-1.5 text-slate-300 hover:text-white text-xs"><i class="fas fa-arrow-up"></i></button>
-              <button onclick="moveSectionDown('${newId}')" class="p-1.5 text-slate-300 hover:text-white text-xs"><i class="fas fa-arrow-down"></i></button>
-              <button onclick="removeSection('${newId}')" class="p-1.5 text-red-400 hover:text-red-300 text-xs"><i class="fas fa-trash"></i></button>
-            </div>
-            <div class="max-w-5xl mx-auto px-6">
-              <h2 class="text-2xl font-bold text-center text-[#0b2265] mb-10" contenteditable="true">Cosa Dicono i Nostri Allievi</h2>
-              <div class="grid md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                  <p class="text-xs text-slate-600 italic mb-4" contenteditable="true">"Un corso fondamentale per la mia crescita professionale. Docenti preparatissimi ed esercitazioni pratiche su casi reali."</p>
-                  <div class="font-bold text-xs text-slate-900" contenteditable="true">Marco Rossi</div>
-                  <div class="text-[11px] text-slate-500" contenteditable="true">HR Manager - Azienda Piacenza</div>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                  <p class="text-xs text-slate-600 italic mb-4" contenteditable="true">"FORPIN si riconferma un partner indispensabile per la formazione continua dei dipendenti della nostra impresa."</p>
-                  <div class="font-bold text-xs text-slate-900" contenteditable="true">Laura Bianchi</div>
-                  <div class="text-[11px] text-slate-500" contenteditable="true">Responsabile Formazione</div>
-                </div>
-              </div>
-            </div>
-          </section>`;
-      } else if (type === 'faq') {
-        html = `
-          <section id="${newId}" class="page-section py-16 bg-white">
-            <div class="section-toolbar">
-              <button onclick="moveSectionUp('${newId}')" class="p-1.5 text-slate-300 hover:text-white text-xs"><i class="fas fa-arrow-up"></i></button>
-              <button onclick="moveSectionDown('${newId}')" class="p-1.5 text-slate-300 hover:text-white text-xs"><i class="fas fa-arrow-down"></i></button>
-              <button onclick="removeSection('${newId}')" class="p-1.5 text-red-400 hover:text-red-300 text-xs"><i class="fas fa-trash"></i></button>
-            </div>
-            <div class="max-w-3xl mx-auto px-6">
-              <h2 class="text-2xl font-bold text-center text-[#0b2265] mb-8" contenteditable="true">Domande Frequenti (FAQ)</h2>
-              <div class="space-y-4 text-xs">
-                <div class="p-4 border border-slate-200 rounded-lg">
-                  <div class="font-bold text-slate-900 mb-1" contenteditable="true">Come ci si iscrive ai corsi FORPIN?</div>
-                  <div class="text-slate-600" contenteditable="true">È possibile iscriversi direttamente online compilando la scheda del corso oppure contattando la nostra segreteria.</div>
-                </div>
-                <div class="p-4 border border-slate-200 rounded-lg">
-                  <div class="font-bold text-slate-900 mb-1" contenteditable="true">I corsi sono finanziabili per le aziende?</div>
-                  <div class="text-slate-600" contenteditable="true">Sì, FORPIN assiste le aziende nell'accesso ai Fondi Interprofessionali per la formazione finanziata.</div>
-                </div>
-              </div>
-            </div>
-          </section>`;
-      }
-
-      if (html) {
-        footer.insertAdjacentHTML('beforebegin', html);
-        notifySaveStatus();
-      }
-    }
-
-    function saveToLocalStorage() {
-      const clone = document.getElementById('page-canvas').cloneNode(true);
-      localStorage.setItem('forpin_landing_html', clone.innerHTML);
-      notifySaveStatus('Salvato in Locale!');
-    }
-
-    function notifySaveStatus(msg = 'Modifica apportata') {
-      const status = document.getElementById('save-status');
-      status.innerHTML = `<i class="fas fa-check-circle text-emerald-500"></i> ${msg}`;
-    }
-
-    function resetTemplate() {
-      if (confirm('Vuoi ripristinare il modello FORPIN originale?')) {
-        localStorage.removeItem('forpin_landing_html');
-        location.reload();
-      }
-    }
-
-    // HTML Export Clean-up
-    function generateCleanExportHTML() {
-      const clone = document.getElementById('page-canvas').cloneNode(true);
-
-      // Remove edit controls and contenteditable attributes
-      clone.querySelectorAll('.section-toolbar').forEach(e => e.remove());
-      clone.querySelectorAll('[contenteditable]').forEach(e => e.removeAttribute('contenteditable'));
-      clone.classList.remove('builder-active', 'view-desktop', 'view-tablet', 'view-mobile');
-
-      return `<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FORPIN - Scuola di Formazione Confindustria Piacenza</title>
-  <script src="https://cdn.tailwindcss.com"><\/script>
+  <title>FORPIN - Scuola di Formazione di Confindustria Piacenza</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    .forpin-logo-sphere {
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+      color: #333;
+      background-color: #ffffff;
+    }
+
+    /* Header e Navigazione FORPIN */
+    .header-container {
+      background-color: #0b2265;
+      color: #ffffff;
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .top-bar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 20px 8px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Logo FORPIN */
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: white;
+    }
+
+    .logo-sphere {
       width: 32px;
       height: 32px;
       border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #ffffff 15%, #5a8bd8 45%, #0b2265 85%);
     }
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .top-menu {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 13px;
+    }
+
+    .top-menu a {
+      color: #ffffff;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .top-menu a:hover {
+      opacity: 0.8;
+    }
+
+    .top-icons {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-left: 10px;
+    }
+
+    .main-nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 8px 20px 14px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .main-nav a {
+      color: #ffffff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Sezione Hero principale */
+    .hero {
+      position: relative;
+      background: #0b2265;
+      color: white;
+      min-height: 520px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 65%;
+      height: 100%;
+      background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #0b2265 0%, #0b2265 45%, rgba(11, 34, 101, 0.75) 65%, rgba(11, 34, 101, 0.1) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .hero-text-block {
+      max-width: 520px;
+    }
+
+    .hero h1 {
+      font-size: 38px;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 15px;
+      line-height: 1.5;
+      margin-bottom: 25px;
+      font-weight: 500;
+      opacity: 0.95;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background-color: #1a3989;
+      color: white;
+      padding: 12px 28px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background-color 0.2s;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .btn-primary:hover {
+      background-color: #2349ac;
+    }
+
+    @media (max-width: 768px) {
+      .top-menu, .main-nav {
+        display: none;
+      }
+      .hero-bg {
+        width: 100%;
+        opacity: 0.3;
+      }
+      .hero-overlay {
+        background: #0b2265;
+        opacity: 0.85;
+      }
+      .hero h1 {
+        font-size: 28px;
+      }
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
-${clone.innerHTML}
+<body>
+
+  <header class="header-container">
+    <div class="top-bar">
+      <a href="#" class="logo-container">
+        <div class="logo-sphere"></div>
+        <span class="logo-text">FORPIN</span>
+      </a>
+
+      <div class="top-menu">
+        <a href="#">Chi siamo</a>
+        <a href="#">Podcast Forpin for AI</a>
+        <a href="#">News</a>
+        <a href="#">Contatti</a>
+        <div class="top-icons">
+          <a href="#"><i class="far fa-newspaper"></i></a>
+          <a href="#"><i class="fas fa-search"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <nav class="main-nav">
+      <a href="#">CATALOGO CORSI <i class="fas fa-chevron-down" style="font-size: 10px;"></i></a>
+      <a href="#">PER LE AZIENDE <i class="fas fa-chevron-down" style="font-size: 10px;"></i></a>
+      <a href="#">PER LE PERSONE <i class="fas fa-chevron-down" style="font-size: 10px;"></i></a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-text-block">
+        <h1>Formiamo con cura il futuro del nostro territorio</h1>
+        <p>Da 35 anni, Scuola di Formazione<br>di Confindustria Piacenza.</p>
+        <a href="#" class="btn-primary">Scopri di più!</a>
+      </div>
+    </div>
+  </section>
+
 </body>
-</html>`;
-    }
-
-    function updateExportPreview() {
-      document.getElementById('export-code-preview').value = generateCleanExportHTML();
-    }
-
-    function exportHTML() {
-      const htmlContent = generateCleanExportHTML();
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'index.html';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    function copyHTMLToClipboard() {
-      const htmlContent = generateCleanExportHTML();
-      const textarea = document.createElement('textarea');
-      textarea.value = htmlContent;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textarea);
-      alert('Codice HTML copiato negli appunti!');
-    }
-
-    // Load from LocalStorage if available
-    window.onload = function() {
-      const saved = localStorage.getItem('forpin_landing_html');
-      if (saved) {
-        document.getElementById('page-canvas').innerHTML = saved;
-      }
-    };
-  </script>
-
-</body></html>
+</html>
